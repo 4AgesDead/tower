@@ -22,6 +22,7 @@ def restart():
     left_group = pygame.sprite.Group()
     up_group = pygame.sprite.Group()
     down_group = pygame.sprite.Group()
+    bar = Bush(bar_image,(0,))
 class Bush(pygame.sprite.Sprite):
     def __init__(self, image, pos):
         pygame.sprite.Sprite.__init__(self)
@@ -37,7 +38,7 @@ class Bush_tower(pygame.sprite.Sprite):
         self.rect.x = pos[0]
         self.rect.y = pos[1]
 class Grass(pygame.sprite.Sprite):
-    def __init__(self, image, pos)
+    def __init__(self, image, pos):
         pygame.sprite.Sprite.__init__(self)
         self.image = image
         self.rect = self.image.get_rect()
@@ -71,12 +72,32 @@ class Left(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
+class Tower(pygame.sprite.Sprite):
+    def __init__(self, image,image2, pos):
+        pygame.sprite.Sprite.__init__(self)
+        if self.money>=200:
+            self.image = image
+        else:
+            self.image = image2
+        self.rect = self.image.get_rect()
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
+        self.buy = False
+        self.timer_click = 0
+        self.money = 1000
+    def buy(self):
+        click = pygame.mouse.get_pos()
+        if pygame.mouse.get_pressed()[0]:
+            self.rect.x = click[0]
+            self.rect.y = click[1]
+
+
 
 def drawMaps(nameFile):
     maps = []
     source = 'maps/' + str(nameFile)
     with open(source, 'r') as file:
-        for i in range(0, 100):
+        for i in range(0, 10):
             maps.append(file.readline().replace('\n', '').split(',')[0:-1])
     pos = [0, 0]
     for i in range(0, len(maps)):
@@ -87,7 +108,7 @@ def drawMaps(nameFile):
                 down = Down(down_image, pos)
                 down_group.add(down)
             elif maps[i][j] == '2':
-                bush = bush(bush_image, pos)
+                bush = Bush(bush_image, pos)
                 bush_group.add(bush)
             elif maps[i][j] == '3':
                 bush = Bush_tower(bush_tower_image, pos)
@@ -106,9 +127,13 @@ def game_lvl():
     down_group.draw(sc)
     bush_group.draw(sc)
     bush_tower_group.draw(sc)
-_group.draw(sc)
+    grass_group.draw(sc)
+    right_group.draw(sc)
+    up_group.draw(sc)
+    pygame.display.update()
+
 restart()
-drawMaps('maps1.txt')
+drawMaps('map1.txt')
 
 while True:
     for event in pygame.event.get():
